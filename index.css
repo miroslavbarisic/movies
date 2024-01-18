@@ -9,7 +9,7 @@ body,
   height: 100vh;
   display: flex;
   flex-direction: column;
-  font-family: "Comic Neue", cursive;
+  font-family: "Source Sans Pro", "Arial", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

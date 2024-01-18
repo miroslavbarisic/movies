@@ -1,0 +1,60 @@
+.root {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: #000000;
+}
+
+.cardArea {
+    position: relative;
+    overflow: hidden;
+}
+
+.actionsContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+.ratingsRoot {
+    display: flex;
+    align-items: center;
+}
+
+.ratingsContainer {
+    font-size: 1rem;
+    color: #e4bb24;
+}
+
+.ratingsContainer>i {
+    font-size: 0.7rem;
+    opacity: 0.5;
+    color: #ffffff;
+}
+.poster {
+
+    transition: all .5s ease-in-out;
+}
+
+.poster:hover {
+    transform: scale(1.1);
+}
+
+.yearSection {
+    vertical-align: middle;
+    display: flex;
+
+}
+
+.overText {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 1), transparent);
+    color: #ffffff;
+}
+
+.favFilled {
+    color: #ff084a;
+}
