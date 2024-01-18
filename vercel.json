@@ -19,11 +19,6 @@
       "dest": "/index.html"
     }
   ],
-  "functions": {
-    "api/**/*.js": {
-      "runtime": "nodejs14"
-    }
-  },
   "env": {
     "SKIP_TYPE_CHECK": "true"
   }
