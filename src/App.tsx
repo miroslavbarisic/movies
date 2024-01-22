@@ -39,7 +39,7 @@ const App: FC = () => {
 
 	const [authenticated, setAuthenticated] = useState<boolean>(true);
 	useEffect(() => {
-		let destination = "/login";
+		let destination = "/";
 
 		if (token) {
 			setAuthenticated(true);
