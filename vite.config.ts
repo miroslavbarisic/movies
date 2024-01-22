@@ -8,10 +8,6 @@ export default ({ mode }) => {
 	process.env = { ...process.env, ...loadEnv(mode, process.cwd()) };
 
 	return defineConfig({
-		build: {
-			outDir: "build",
-			sourcemap: true,
-		},
 		define: {
 			"process.env": {
 				VITE_API_BASE_URL: JSON.stringify(process.env.VITE_API_BASE_URL),
