@@ -27,6 +27,7 @@ export type MovieCardProps = {
 };
 
 const MovieCard = ({ page, onRemoveFromFavorites }: MovieCardProps) => {
+	const token = localStorage.getItem("auth_token");
 	const navigate = useNavigate();
 	const [isBookmarked, setIsBookmarked] = useState(null);
 
@@ -61,7 +62,6 @@ const MovieCard = ({ page, onRemoveFromFavorites }: MovieCardProps) => {
 					<Typography variant="h6" component="div">
 						{page.title}
 					</Typography>
-
 				</CardContent>
 			</CardActionArea>
 			<CardActions className={styles.actionsContainer}>
@@ -80,18 +80,30 @@ const MovieCard = ({ page, onRemoveFromFavorites }: MovieCardProps) => {
 					aria-label="add to favorites"
 					onClick={() => {
 						try {
+							if (!token) {
+								navigate("/login");
+								return;
+							}
+
 							setIsBookmarked(!isBookmarked);
+
 							if (isBookmarked) {
 								onRemoveFromFavorites();
 							} else {
 								window?.localStorage.setItem(page.id, JSON.stringify(page));
 							}
 						} catch (error) {
-							console.log("Unable to Bookmark this item because localStorage is not accessible");
+							console.log(
+								"Unable to Bookmark this item because localStorage is not accessible"
+							);
 						}
 					}}
 				>
-					{isBookmarked ? <FavoriteIcon className={styles.favFilled} /> : <FavoriteBorderIcon />}
+					{isBookmarked ? (
+						<FavoriteIcon className={styles.favFilled} />
+					) : (
+						<FavoriteBorderIcon />
+					)}
 				</IconButton>
 				<Typography component="div" className={styles.ratingsRoot}>
 					<StarIcon fontSize="medium" htmlColor="#e4bb24" />

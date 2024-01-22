@@ -2,18 +2,23 @@ import React, { useState } from "react";
 import type { ReactElement } from "react";
 import styles from "./index.module.css";
 import SearchBox from "../../components/SearchBox";
-import { fetchMovies, searchMovies } from "../../utils/service";
+import { fetchMovies, searchMovies, fetchByRating } from "../../utils/service";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import MovieCard from "../../components/MovieCard";
 import Skeleton from "../../components/MovieCard/Skeleton";
 import Grid from "@mui/material/Grid";
 import InfiniteScroll from "react-infinite-scroll-component";
+import RatingFilter from "../../components/RatingFilter";
 
 const Home = (): ReactElement => {
 	const [searchText, setSearchText] = useState("");
-
+	const [filterValue, setFilterValue] = useState(0);
 	const handleSearchChange = (text: string) => {
 		setSearchText(text);
+	};
+
+	const handleFilterChange = (value: number) => {
+		setFilterValue(value);
 	};
 
 	const removeFromFavorites = (movieId: number) => {
@@ -24,31 +29,35 @@ const Home = (): ReactElement => {
 		}
 	};
 
-	const {
-		data,
-		error,
-		fetchNextPage,
-		hasNextPage,
-		isSuccess,
-		isLoading,
-	} = useInfiniteQuery({
-		queryKey: ["movies", searchText],
-		queryFn: ({ pageParam }) => {
-			if (searchText.length > 0) {
-				return searchMovies({ s: searchText, page: pageParam });
-			} else {
-				return fetchMovies(pageParam);
-			}
-		},
-		initialPageParam: 1,
-		getNextPageParam: (lastPage) => {
-			if (lastPage.results.length === 0) {
-				return undefined;
-			}
-			return lastPage.page + 1;
-		},
-		enabled: Boolean(searchText) || undefined,
-	});
+	const { data, error, fetchNextPage, hasNextPage, isSuccess, isLoading } =
+		useInfiniteQuery({
+			queryKey: ["movies", searchText, filterValue],
+			queryFn: ({ pageParam }) => {
+				if (searchText.length > 0) {
+					return searchMovies({ s: searchText, page: pageParam });
+				} else if (Array.isArray(filterValue) && filterValue[1] > 1) {
+					// Only call fetchByRating if the upper range in filterValue is greater than 1
+					return fetchByRating({
+						rangeFrom: filterValue[0],
+						rangeTo: filterValue[1],
+						page: pageParam,
+					});
+				} else {
+					return fetchMovies(pageParam);
+				}
+			},
+			initialPageParam: 1,
+			getNextPageParam: (lastPage) => {
+				if (lastPage.results.length === 0) {
+					return undefined;
+				}
+				return lastPage.page + 1;
+			},
+			enabled:
+				Boolean(searchText) ||
+				(Array.isArray(filterValue) && filterValue[1] > 1) ||
+				undefined,
+		});
 
 	const MoviesLoader = (itemCount: number): ReactElement => (
 		<Grid container spacing={2}>
@@ -64,12 +73,15 @@ const Home = (): ReactElement => {
 		<div className={styles.root}>
 			<Grid container justifyContent="center">
 				<Grid item xs={12} sm={10}>
-					<Grid container justifyContent="center">
+					<Grid container justifyContent="center" spacing={4}>
 						<Grid item xs={11} md={4}>
 							<SearchBox
 								className={styles.searchBox}
 								onChange={handleSearchChange}
 							/>
+						</Grid>
+						<Grid item xs={11} md={3}>
+							<RatingFilter onChange={handleFilterChange} />
 						</Grid>
 					</Grid>
 
@@ -81,9 +93,8 @@ const Home = (): ReactElement => {
 								{isSuccess && data?.pages?.length > 0 ? (
 									<InfiniteScroll
 										dataLength={
-											data?.pages
-												.map((page) => page.results)
-												.flat()?.length ?? 0
+											data?.pages.map((page) => page.results).flat()?.length ??
+											0
 										}
 										next={fetchNextPage}
 										hasMore={hasNextPage || false}
@@ -100,8 +111,7 @@ const Home = (): ReactElement => {
 															page={page}
 															onRemoveFromFavorites={() => {
 																removeFromFavorites(page.id);
-															}
-															}
+															}}
 														/>
 													</Grid>
 												))}

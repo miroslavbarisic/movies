@@ -1,6 +1,12 @@
 import type { ReactElement, FormEvent } from "react";
 import { useRef } from "react";
-import { Paper, InputBase, IconButton, createTheme, ThemeProvider } from "@mui/material";
+import {
+	Paper,
+	InputBase,
+	IconButton,
+	createTheme,
+	ThemeProvider,
+} from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 
 type SearchBoxProps = {
@@ -9,8 +15,7 @@ type SearchBoxProps = {
 };
 
 const defaultProps: SearchBoxProps = {
-	onChange: () => {
-	},
+	onChange: () => {},
 	className: "",
 };
 
